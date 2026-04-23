@@ -1,4 +1,4 @@
-﻿package com.smartcampus.api.filter;
+package com.smartcampus.filters;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -10,20 +10,23 @@ import java.util.logging.Logger;
 
 @Provider
 public class LoggingFilter implements ContainerRequestFilter, ContainerResponseFilter {
-    private static final Logger logger = Logger.getLogger(LoggingFilter.class.getName());
+    
+    private static final Logger LOGGER = Logger.getLogger(LoggingFilter.class.getName());
     
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        logger.info(String.format("[REQUEST] %s %s", 
-            requestContext.getMethod(), 
-            requestContext.getUriInfo().getRequestUri().toString()));
+        LOGGER.info(String.format("REQUEST: %s %s",
+            requestContext.getMethod(),
+            requestContext.getUriInfo().getRequestUri().getPath()
+        ));
     }
     
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-        logger.info(String.format("[RESPONSE] %s %s - Status: %d",
+        LOGGER.info(String.format("RESPONSE: %d for %s %s",
+            responseContext.getStatus(),
             requestContext.getMethod(),
-            requestContext.getUriInfo().getRequestUri().toString(),
-            responseContext.getStatus()));
+            requestContext.getUriInfo().getRequestUri().getPath()
+        ));
     }
 }
