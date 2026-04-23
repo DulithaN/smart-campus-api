@@ -10,21 +10,22 @@ import java.util.logging.Logger;
 
 @Provider
 public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
-    
+
     private static final Logger LOGGER = Logger.getLogger(GlobalExceptionMapper.class.getName());
-    
+
     @Context
     private UriInfo uriInfo;
-    
+
     @Override
     public Response toResponse(Throwable exception) {
         LOGGER.severe("Unexpected error: " + exception.getMessage());
-        
+        exception.printStackTrace(); // This will help us debug
+
         ErrorResponse error = new ErrorResponse(
-            500,
-            "Internal Server Error",
-            "An unexpected error occurred. Please try again later.",
-            uriInfo.getPath()
+                500,
+                "Internal Server Error",
+                "An unexpected error occurred: " + exception.getMessage(),
+                uriInfo != null ? uriInfo.getPath() : "unknown"
         );
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
